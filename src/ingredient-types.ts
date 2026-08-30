@@ -9,7 +9,15 @@
  * type. "chutney" (a sauce) can become "marinara" (a sauce), but asking for
  * "chutney" as "gin" (a beverage) is an error.
  */
-export const INGREDIENT_TYPES = ["sauce", "beverage"] as const;
+export const INGREDIENT_TYPES = [
+	"sauce",
+	"beverage",
+	"spice",
+	"sweetener",
+	"oil",
+	"dairy",
+	"flour",
+] as const;
 
 export type IngredientType = (typeof INGREDIENT_TYPES)[number];
 

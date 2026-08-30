@@ -59,7 +59,7 @@ default rule *is* weight-equivalence. Only curves break that identity.
 | Adjust a density | That ingredient's file |
 | Bespoke / non-linear conversion | `curves` in both ingredients' files |
 | Conversion tests | `examples` in the ingredient's own file |
-| New ingredient type | One line in `src/ingredient-types.ts` |
+| New ingredient type | One line in `src/ingredient-types.ts`, plus a folder under `src/ingredients/` |
 | New unit | One row in the table in `src/units.ts` |
 | Conversion algorithm | `src/convert.ts` |
 | Data validation rules | `src/registry.ts` |
@@ -86,6 +86,15 @@ Three skills in `.claude/skills/` walk through the common jobs step by step:
 `add-ingredient`, `add-conversion-examples`, and `add-conversion-curve`. Prefer
 following one of those over improvising, so that everyone's contributions come
 out looking the same.
+
+Nine pairs already carry curves, deliberately covering different shapes: a jump
+(chutney/marinara), a change of rate with no jump (espresso/kombucha), a
+logarithm and its inverse (honey/molasses), a square root (cinnamon/nutmeg), an
+upper limit that returns `null` (saffron/paprika), a lower floor
+(sesame oil/olive oil), a fixed starting cost (buttermilk/yogurt), and a clamp
+that deliberately does not round-trip (cornstarch/all-purpose flour). When
+writing a new curve, find the closest of these and follow it — the README lists
+them in a table.
 
 When someone gives you a conversion in words — *"past 2 ml you need twice as
 much marinara"* — read it back to them as numbers before writing any code

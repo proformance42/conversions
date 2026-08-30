@@ -87,11 +87,18 @@ One file per ingredient, sorted into a folder per type.
 ```
 src/ingredients/
 	index.ts             <- the list every ingredient is registered in
-	sauces/chutney.ts
-	sauces/marinara.ts
-	beverages/vodka.ts
-	beverages/gin.ts
+	sauces/       chutney, marinara, pesto, aioli, harissa, tzatziki, gravy, hollandaise
+	beverages/    vodka, gin, rum, whiskey, cider, kombucha, espresso, lemonade
+	spices/       cinnamon, paprika, turmeric, cumin, saffron, nutmeg, cayenne, cardamom
+	sweeteners/   honey, molasses, maple syrup, agave, treacle, glucose, stevia, sorghum
+	oils/         olive oil, sesame oil, coconut oil, canola oil, peanut oil, walnut oil, avocado oil, ghee
+	dairy/        milk, cream, buttermilk, yogurt, sour cream, kefir, condensed milk, half and half
+	flours/       all-purpose flour, bread flour, cake flour, rye flour, almond flour, semolina, cornstarch, oat flour
 ```
+
+The type names themselves live in
+[`src/ingredient-types.ts`](src/ingredient-types.ts). An ingredient can only be
+swapped for another of the same type.
 
 If you use an AI assistant, ask it to run the `add-ingredient`,
 `add-conversion-examples`, or `add-conversion-curve` skill and it will walk you
@@ -187,6 +194,33 @@ reverse a curve for you on purpose: the example above jumps at 2 ml, so no
 amount of chutney produces between 1.5 ml and 4 ml of marinara, and only a
 person can decide what to answer in that gap. The tests fail if you write only
 one side.
+
+#### Find a curve shaped like yours
+
+Eight pairs already carry curves, each a different shape. Open the one closest
+to what you are describing and copy it rather than starting from nothing.
+
+| If your rule… | Look at | Where |
+| --- | --- | --- |
+| jumps suddenly at some amount | chutney → marinara | [`sauces/chutney.ts`](src/ingredients/sauces/chutney.ts) |
+| changes rate but never jumps | espresso → kombucha | [`beverages/espresso.ts`](src/ingredients/beverages/espresso.ts) |
+| grows more and more slowly | honey → molasses | [`sweeteners/honey.ts`](src/ingredients/sweeteners/honey.ts) |
+| grows faster and faster | molasses → honey | [`sweeteners/molasses.ts`](src/ingredients/sweeteners/molasses.ts) |
+| needs a lot up front, little after | cinnamon → nutmeg | [`spices/cinnamon.ts`](src/ingredients/spices/cinnamon.ts) |
+| stops working above some amount | saffron → paprika | [`spices/saffron.ts`](src/ingredients/spices/saffron.ts) |
+| is not worth doing below some amount | sesame oil → olive oil | [`oils/sesame-oil.ts`](src/ingredients/oils/sesame-oil.ts) |
+| has a fixed cost before it scales | buttermilk → yogurt | [`dairy/buttermilk.ts`](src/ingredients/dairy/buttermilk.ts) |
+| stops making a difference past a point | cornstarch → all-purpose flour | [`flours/cornstarch.ts`](src/ingredients/flours/cornstarch.ts) |
+
+Two of them are worth reading even if you are not writing a curve, because they
+show what the library will and will not promise:
+
+- **cornstarch → all-purpose flour** stops climbing, so 30 ml and 500 ml of
+  cornstarch give the same answer. Converting back gives you 30 ml, not what you
+  started with. Some conversions genuinely lose information, and the library
+  would rather say so than pretend.
+- **saffron → paprika** simply refuses above half a millilitre. Returning `null`
+  from a curve is a real answer — better than a number nobody should cook with.
 
 ---
 
