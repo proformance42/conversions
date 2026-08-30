@@ -13,8 +13,16 @@ jobs:
     steps:
       - name: Ask cooking-conversions to update its pinned version
         env:
+          # Not GITHUB_TOKEN: that one is scoped to this repository and cannot
+          # dispatch to another. This needs a token with actions: write on
+          # cooking-conversions.
           GH_TOKEN: ${{ secrets.REPO_SYNC_TOKEN }}
         run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::REPO_SYNC_TOKEN is not set on this repository. Add it under Settings → Secrets and variables → Actions: a fine-grained personal access token with actions: write on proformance42/cooking-conversions."
+            exit 1
+          fi
+
           gh api repos/proformance42/cooking-conversions/dispatches \
             --method POST \
             --field event_type=conversions-updated \
