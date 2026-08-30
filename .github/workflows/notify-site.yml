@@ -1,0 +1,21 @@
+# Tell the website repository that the numbers here have changed, so it can
+# open a pull request picking up this commit. That repository does the rest.
+name: notify site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask cooking-conversions to update its pinned version
+        env:
+          GH_TOKEN: ${{ secrets.REPO_SYNC_TOKEN }}
+        run: |
+          gh api repos/proformance42/cooking-conversions/dispatches \
+            --method POST \
+            --field event_type=conversions-updated \
+            --field 'client_payload[sha]=${{ github.sha }}'
